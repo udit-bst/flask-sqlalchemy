@@ -864,8 +864,13 @@ class SQLAlchemy:
         if sa_url.drivername.startswith("mysql"):
             sa_url.query.setdefault("charset", "utf8")
             if sa_url.drivername != "mysql+gaerdbms":
-                options.setdefault("pool_size", 10)
-                options.setdefault("pool_recycle", 7200)
+                pool_class_name = None
+                if 'poolclass' in options:
+                    pool_class_name = options['poolclass'].__name__
+                if pool_class_name != 'NullPool':
+                    # NullPool doesn't support pooling options...
+                    options.setdefault('pool_size', 10)
+                    options.setdefault('pool_recycle', 7200)
         elif sa_url.drivername == "sqlite":
             pool_size = options.get("pool_size")
             detected_in_memory = False
