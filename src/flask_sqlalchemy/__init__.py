@@ -867,6 +867,8 @@ class SQLAlchemy:
                 pool_class_name = None
                 if 'poolclass' in options:
                     pool_class_name = options['poolclass'].__name__
+                if 'poolclass' in app.config["SQLALCHEMY_ENGINE_OPTIONS"]:
+                    pool_class_name = app.config["SQLALCHEMY_ENGINE_OPTIONS"]['poolclass'].__name__
                 if pool_class_name != 'NullPool':
                     # NullPool doesn't support pooling options...
                     options.setdefault('pool_size', 10)
